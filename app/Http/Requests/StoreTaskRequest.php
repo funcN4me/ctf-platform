@@ -21,6 +21,18 @@ class StoreTaskRequest extends FormRequest
         return false;
     }
 
+    public function messages()
+    {
+        return [
+            'required' => 'Поле :attribute обязательно для заполнения',
+            'string' => 'Поле :attribute должно быть строковым значением',
+            'max' => 'Поле :attribute должно содержать максимум :max символов',
+            'min' => 'Поле :attribute должно содержать минимум :min символов',
+            'unique' => 'Данное :attribute уже используется',
+            'in' => 'Выберите из списка',
+        ];
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -28,23 +40,13 @@ class StoreTaskRequest extends FormRequest
      */
     public function rules()
     {
-//        if ($this->input('category') !== '-1') {
         return [
-            'name' => ['required', 'string', 'max:255', 'min:3', 'unique:tasks,name'],
-            'category' => ['required', 'integer'],
-            'subcategory' => ['required', 'string', 'max:255', 'min:2'],
-            'description' => ['required', 'string', 'min:2'],
-            'link' => ['string'],
-            'flag' => ['required', 'string', 'min:8', 'max:255', 'unique:tasks,flag'],
+            'name' => 'required|string|max:255|min:3|unique:tasks,name',
+            'category' => 'required|in:Web,Reverse,Stegano,Forensic,Networking,Other',
+            'subcategory' => 'required|string|max:255|min:2',
+            'description' => 'required|string|min:2',
+            'link' => 'string|unique',
+            'flag' => 'required|string|min:8|max:255|unique:tasks,flag',
         ];
-//        }
-//        return [
-//            'name' => ['required', 'string', 'max:255', 'min:3', 'unique:tasks,name'],
-//            'new-category' => ['required'],
-//            'subcategory' => ['required', 'string', 'max:255', 'min:2'],
-//            'description' => ['required', 'string', 'min:2'],
-//            'link' => ['string'],
-//            'flag' => ['required', 'string', 'min:8', 'max:255', 'unique:tasks,flag'],
-//        ];
     }
 }

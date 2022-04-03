@@ -19,7 +19,7 @@ class CreateTasksTable extends Migration
             $table->integer('category_id');
             $table->string('sub_category');
             $table->string('description');
-            $table->string('url')->nullable();
+            $table->string('url')->nullable()->unique();
             $table->string('flag')->unique();
             $table->timestamps();
         });

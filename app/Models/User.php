@@ -44,7 +44,7 @@ class User extends Authenticatable
 
     public function tasks()
     {
-        $this->belongsToMany(Task::class);
+        return $this->belongsToMany(Task::class)->withTimestamps();
     }
 
     public function roles()

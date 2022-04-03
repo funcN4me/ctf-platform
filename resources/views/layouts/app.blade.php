@@ -55,6 +55,9 @@
                                     <li class="nav-item">
                                         <a class="nav-link" href="{{ route('tasks.create') }}">{{ __('Создать задачу') }}</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('users.show') }}">{{ __('Пользователи') }}</a>
+                                    </li>
                                 @endif
 
                             </ul>

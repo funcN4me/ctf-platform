@@ -34,14 +34,14 @@
                                 <label for="category" class="col-md-4 col-form-label text-md-end">{{ __('Категория') }}</label>
 
                                 <div class="col-md-6">
-                                    <select name="category" class="form-select" id="create_category">
+                                    <select name="category" class="form-select @error('category') is-invalid @enderror" id="create_category">
                                         <option>Выберите категорию из списка</option>
                                     @foreach($categories as $key => $value)
-                                            <option value="{{ $key + 1 }}">
+                                            <option value="{{ $value->name }}">
                                             {{ $value->name }}
                                             </option>
                                         @endforeach
-                                        <option value="-1">
+                                        <option value="Other">
                                             Категории нет в списке
                                         </option>
                                     </select>
@@ -57,9 +57,9 @@
                             <div id="div-new-category" class="row mb-3" hidden>
                                 <label id="label-new-category" for="new-category" class="col-md-4 col-form-label text-md-end" hidden>{{ __('Введите название') }}</label>
                                 <div class="col-md-6">
-                                    <input id="new-category" type="text" class="form-control @error('new-category') is-invalid @enderror" name="new-category" hidden>
+                                    <input id="new-category" type="text" class="form-control @error('new_category') is-invalid @enderror" name="new_category" hidden>
 
-                                    @error('new-category')
+                                    @error('new_category')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -86,7 +86,7 @@
 
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <textarea name="description" class="form-control" id="description" style="height: 10em;"></textarea>
+                                        <textarea name="description" class="form-control @error('description') is-invalid @enderror" id="description" style="height: 10em;"></textarea>
                                         <label for="description">Описание</label>
                                     </div>
                                     @error('description')
@@ -114,7 +114,7 @@
                                 <label for="url" class="col-md-4 col-form-label text-md-end">{{ __('Ссылка на задачу') }}</label>
 
                                 <div class="col-md-6">
-                                    <input class="form-control" type="url" id="url" name="link">
+                                    <input class="form-control" type="url" id="url" name="url">
                                     @error('url')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -159,7 +159,7 @@
     <script>
         $(document).ready(function () {
             $("#create_category").on('change', function () {
-                if ($("#create_category").val() === "-1") {
+                if ($("#create_category").val() === "Other") {
                     $("#new-category").attr('hidden', false);
                     $("#label-new-category").attr('hidden', false);
                     $("#div-new-category").attr('hidden', false);
@@ -175,7 +175,7 @@
                     Swal.fire({
                         position: 'top-end',
                         icon: 'success',
-                        title: 'Позиция добавлена',
+                        title: 'Задача добавлена',
                         backdrop: false,
                         width: '20rem',
                         showConfirmButton: false,

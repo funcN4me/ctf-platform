@@ -12,4 +12,10 @@ class UserController extends Controller
         $users = User::all();
         return view('users', compact('users'));
     }
+
+    public function profile($id)
+    {
+        $user = User::find($id);
+        return view('user', compact('user'));
+    }
 }
