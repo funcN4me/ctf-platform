@@ -14,4 +14,9 @@ class Attachment extends Model
         'file_path',
         'task_id',
     ];
+
+    public function task()
+    {
+        return $this->belongsTo(Task::class);
+    }
 }

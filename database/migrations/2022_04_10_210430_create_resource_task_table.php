@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTasksTable extends Migration
+class CreateResourceTaskTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,10 @@ class CreateTasksTable extends Migration
      */
     public function up()
     {
-        Schema::create('tasks', function (Blueprint $table) {
+        Schema::create('resource_task', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->integer('category_id');
-            $table->string('sub_category');
-            $table->text('description');
-            $table->string('url')->nullable()->unique();
-            $table->string('flag')->unique();
+            $table->integer('resource_id');
+            $table->integer('task_id');
             $table->timestamps();
         });
     }
@@ -32,6 +28,6 @@ class CreateTasksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tasks');
+        Schema::dropIfExists('resource_task');
     }
 }

@@ -5,16 +5,16 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">{{ __('Создать задачу') }}</div>
-
+                    <div class="card-header">{{ __('Изменить задачу') }}</div>
                     <div class="card-body">
-                        <form method="POST" action="{{ route('tasks.store') }}" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('task.update', $task) }}" enctype="multipart/form-data">
+                            @method('put')
                             @csrf
                             <div class="row mb-3">
                                 <label for="name" class="col-md-4 col-form-label text-md-end">{{ __('Название задачи') }}</label>
 
                                 <div class="col-md-6">
-                                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+                                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ $task->name }}" required autocomplete="name" autofocus>
 
                                     @error('name')
                                     <span class="invalid-feedback" role="alert">
@@ -35,12 +35,16 @@
 
                                 <div class="col-md-6">
                                     <select name="category" class="form-select @error('category') is-invalid @enderror" id="create_category">
-                                        <option>Выберите категорию из списка</option>
+                                        <option>{{ $task->category->name }}</option>
+
                                     @foreach($categories as $key => $value)
-                                            <option value="{{ $value->name }}">
-                                            {{ $value->name }}
-                                            </option>
-                                        @endforeach
+                                        @if($task->category->name == $value->name)
+                                            @continue
+                                        @endif
+                                        <option value="{{ $value->name }}">
+                                        {{ $value->name }}
+                                        </option>
+                                    @endforeach
                                         <option value="Other">
                                             Категории нет в списке
                                         </option>
@@ -71,26 +75,9 @@
                                 <label for="subcategory" class="col-md-4 col-form-label text-md-end">{{ __('Подкатегория') }}</label>
 
                                 <div class="col-md-6">
-                                    <input id="subcategory" type="text" class="form-control @error('subcategory') is-invalid @enderror" name="subcategory" value="{{ old('subcategory') }}" required autocomplete="subcategory">
+                                    <input id="subcategory" type="text" class="form-control @error('subcategory') is-invalid @enderror" name="subcategory" value="{{ $task->sub_category }}" required autocomplete="subcategory">
 
                                     @error('subcategory')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <label for="resources" class="col-md-4 col-form-label text-md-end">{{ __('Ресурсы для решения') }}</label>
-
-                                <div class="col-md-6">
-                                    <input id="resources" type="text" class="resources form-control @error('resources') is-invalid @enderror" name="resources[]" value="" required autocomplete="resources">
-                                    <br>
-                                    <div class="container text-end">
-                                        <button id="add_resource_btn" type="button" class="btn btn-sm btn-secondary">Добавить ресурс</button>
-                                    </div>
-                                    @error('resources')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -103,7 +90,7 @@
 
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <textarea name="description" class="form-control @error('description') is-invalid @enderror" id="description" style="height: 10em;"></textarea>
+                                        <textarea name="description" class="form-control @error('description') is-invalid @enderror" id="description" style="height: 10em;">{{ $task->description }}</textarea>
                                         <label for="description">Описание</label>
                                     </div>
                                     @error('description')
@@ -119,6 +106,26 @@
 
                                 <div class="col-md-6">
                                     <input name="attachments[]" class="form-control" type="file" id="files" multiple>
+                                    <div class="container text-center" id="taskContainer">
+                                        <div class="row">
+                                        @foreach($task->attachments as $attachment)
+                                            <div class="col-5">
+                                                <div class="card" style="width: 8rem; margin-top: 20px; background-color: #E9ECEFFF;">
+                                                    <div class="card-header text-end">
+                                                        <a id="attachmentDelete" href="#" data-id="{{ $attachment->id }}">
+                                                            <img src="{{ asset('images/xmark.svg') }}" alt="" width="20px">
+                                                        </a>
+                                                    </div>
+                                                    <a href="{{ $attachment->file_path }}">
+                                                        <div class="card-body text-center" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
+                                                            {{ $attachment->name }}
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                        </div>
+                                    </div>
                                     @error('attachments')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -131,7 +138,7 @@
                                 <label for="url" class="col-md-4 col-form-label text-md-end">{{ __('Ссылка на задачу') }}</label>
 
                                 <div class="col-md-6">
-                                    <input class="form-control" type="url" id="url" name="url">
+                                    <input class="form-control" type="url" id="url" name="url" value="{{ $task->url }}">
                                     @error('url')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -144,8 +151,7 @@
                                 <label for="flag" class="col-md-4 col-form-label text-md-end">{{ __('Флаг') }}</label>
 
                                 <div class="col-md-6">
-                                    <input class="form-control" type="text" id="flag" name="flag">
-                                    <span style="font-size: 0.85em; font-weight: bold;color: red">*Префикс 4hsl33p{...} выставится автоматически</span>
+                                    <input class="form-control" type="text" id="flag" name="flag" value="{{ $task->flag }}">
                                     @error('flag')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -160,7 +166,7 @@
                             <div class="row mb-3">
                                 <div class="col-md-6 offset-md-4">
                                     <button type="submit" class="btn btn-primary">
-                                        {{ __('Создать') }}
+                                        {{ __('Изменить') }}
                                     </button>
                                 </div>
                             </div>
@@ -175,6 +181,11 @@
 @section('scripts')
     <script>
         $(document).ready(function () {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
             $("#create_category").on('change', function () {
                 if ($("#create_category").val() === "Other") {
                     $("#new-category").attr('hidden', false);
@@ -188,14 +199,24 @@
                     $("#div-new-category").attr('hidden', true);
                 }
             });
-            $("#add_resource_btn").on('click', function () {
-                $(".resources").last().after("<br> <input id=\"resources\" type=\"text\" class=\"resources form-control\" name=\"resources[]\">");
+            $('body').on('click', '#attachmentDelete', function (event) {
+                var id = $(this).data('id');
+                $.ajax({
+                    type: "DELETE",
+                    url: '/task/attachment/' + id,
+                    success: function (resp) {
+                        if (resp.response === 'successful') {
+                            $(this).remove();
+                            $('#taskContainer').load(location.href + " #taskContainer");
+                        }
+                    }
+                });
             });
                 if($('#success').length) {
                     Swal.fire({
                         position: 'top-end',
                         icon: 'success',
-                        title: 'Задача добавлена',
+                        title: 'Задача обновлена',
                         backdrop: false,
                         width: '20rem',
                         showConfirmButton: false,

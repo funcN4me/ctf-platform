@@ -16,6 +16,11 @@
                                     <div class="card-header" style="max-height: 5em;">{{ $task->sub_category }}</div>
                                     <div class="card-body" style="min-height: 8em;">
                                         {{ $task->name }}
+                                        @if(auth()->user()->isAdmin())
+                                            <div class="container align-text-bottom text-end" style="padding-top: 4vh;margin-left: 1.5em;">
+                                                <a class="task-edit" href="{{ route('task.edit', $task->id) }}" style="border: 1px solid black; border-radius: 25px; padding: 8px;"><img src="{{ asset('images/pen.svg') }}" alt="" width="20px"></a>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -38,17 +43,17 @@
                     <div class="modal-body">
                         <input id="task_id" type="text" name="task_id" hidden>
                         <p id="modal-description"></p>
-                        <span id="modal-link">Ссылка на задание <a id="modal-url" href=""></a></span>
+                        <span id="modal-link">Ссылка на задание: <a id="modal-url" href=""></a></span>
+                        <br>
                         <span id="modal-attach">Файлы для задания:</span>
                         <div id="modal-attachments">
                         </div>
                         <br>
                         <label for="flag">Флаг:</label>
-                        <input id="flag" name="flag" type="text" class="form-control">
+                        <input id="flag" name="flag" type="text" class="form-control" placeholder="4hsl33p{...}">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button id="submit-flag" type="submit" class="btn btn-primary">Save changes</button>
+                        <button id="submit-flag" type="submit" class="btn btn-primary">Отправить</button>
                     </div>
                 </form>
             </div>
@@ -81,7 +86,7 @@
                                 icon: 'success',
                                 title: 'Верно',
                                 showConfirmButton: false,
-                                timer: 1000
+                                timer: 1500
                             });
                         }
                         else {
@@ -90,7 +95,7 @@
                                 icon: 'error',
                                 title: 'Не верно',
                                 showConfirmButton: false,
-                                timer: 1000
+                                timer: 1500
                             });
                         }
                     }
@@ -100,10 +105,14 @@
                         icon: 'error',
                         title: resp.responseJSON.errors.flag[0],
                         showConfirmButton: false,
-                        timer: 1000
+                        timer: 1500
                     });
                 });
             });
+        });
+
+        $('body').on('click', '.task-edit', function (event) {
+            event.prevent();
         });
         $('body').on('click', '#showTask', function (event) {
             event.preventDefault();

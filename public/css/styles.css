@@ -6,3 +6,8 @@
     font-size: 30px;
     padding-bottom: 20px;
 }
+
+.task-edit:hover {
+    background-color: #0df0ac;
+    transition: 0.5s;
+}

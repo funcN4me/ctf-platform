@@ -23,8 +23,18 @@ class Task extends Model
         return $this->belongsToMany(User::class);
     }
 
+    public function attachments()
+    {
+        return $this->hasMany(Attachment::class);
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function resources()
+    {
+        return $this->belongsToMany(Resource::class);
     }
 }

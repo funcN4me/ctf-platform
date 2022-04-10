@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class StoreTaskRequest extends FormRequest
+class UpdateTaskRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,11 +14,7 @@ class StoreTaskRequest extends FormRequest
      */
     public function authorize()
     {
-        if (Auth::user()->isAdmin()) {
-            return true;
-        }
-
-        return false;
+        return Auth::user()->isAdmin();
     }
 
     public function messages()
@@ -41,13 +37,12 @@ class StoreTaskRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255|min:3|unique:tasks,name',
-            'category' => 'required|in:Web,Reverse,Stegano,Forensic,Networking,Other',
+            'name' => 'required|string|max:255|min:3',
+            'category' => 'required|exists:categories,name',
             'subcategory' => 'required|string|max:255|min:2',
-            'resources' => 'array',
             'description' => 'required|string|min:2',
-            'link' => 'string|unique',
-            'flag' => 'required|string|min:8|max:255|unique:tasks,flag',
+            'link' => 'string',
+            'flag' => 'required|string|min:8|max:255'
         ];
     }
 }
