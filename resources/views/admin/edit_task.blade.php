@@ -25,9 +25,7 @@
                             </div>
 
                             @if($errors->any())
-                                @foreach($errors as $error)
-                                    {{ $error }}
-                                @endforeach
+                                {{ $errors->first() }}
                             @endif
 
                             <div class="row mb-3">
@@ -75,9 +73,37 @@
                                 <label for="subcategory" class="col-md-4 col-form-label text-md-end">{{ __('Подкатегория') }}</label>
 
                                 <div class="col-md-6">
-                                    <input id="subcategory" type="text" class="form-control @error('subcategory') is-invalid @enderror" name="subcategory" value="{{ $task->sub_category }}" required autocomplete="subcategory">
+                                    <input id="subcategory" type="text" class="form-control @error('subcategory') is-invalid @enderror" name="subcategory" value="{{ $task->subcategory }}" required autocomplete="subcategory">
 
                                     @error('subcategory')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <p class="col-md-4 col-form-label text-md-end">{{ __('Ресурсы для решения') }}</p>
+
+                                <div class="col-md-6">
+                                    @if($resources->isNotEmpty())
+                                        <span style="font-size: 0.85em; font-weight: bold;color: red">Выберите ресурсы из списка (чтобы отменить выбор ресурса или выбрать несколько - нажмите на него с зажатой клавишей Ctrl)</span>
+                                        <select name="resources[]" class="form-select" multiple>
+                                            @foreach($resources as $resource)
+                                                <option value="{{ $resource->id }}" @if($task->resources->contains($resource)) selected @endif>{{ $resource->title }}</option>
+                                            @endforeach
+                                        </select>
+                                        <br>
+                                        <input id="resources" type="text" class="resources form-control @error('resources') is-invalid @enderror" name="new_resources[]" value="" autocomplete="resources" placeholder="Название нового ресурса">
+                                    @else
+                                        <input id="resources" type="text" class="resources form-control @error('resources') is-invalid @enderror" name="new_resources[]" value="" autocomplete="resources" required placeholder="Название нового ресурса">
+                                    @endif
+                                    <br>
+                                    <div id="control-btns" class="container text-end">
+                                        <button id="add_resource_btn" type="button" class="btn btn-sm btn-secondary">Добавить ещё один ресурс</button>
+                                    </div>
+                                    @error('resources')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -103,10 +129,9 @@
 
                             <div class="row mb-3">
                                 <label for="files" class="col-md-4 col-form-label text-md-end">{{ __('Вложения') }}</label>
-
                                 <div class="col-md-6">
                                     <input name="attachments[]" class="form-control" type="file" id="files" multiple>
-                                    <div class="container text-center" id="taskContainer">
+                                    <div class="d-flex text-center justify-content-center" id="taskContainer">
                                         <div class="row">
                                         @foreach($task->attachments as $attachment)
                                             <div class="col-5">

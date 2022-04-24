@@ -72,7 +72,7 @@
                                         <tr>
                                             <td>{{ $task->name }}</td>
                                             <td>{{ $task->category->name }}</td>
-                                            <td>{{ $task->sub_category }}</td>
+                                            <td>{{ $task->subcategory }}</td>
                                             <td></td>
                                         </tr>
                                     @endforeach

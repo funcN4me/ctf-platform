@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Resource extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'title', 'content'
+    ];
 
     public function tasks()
     {

@@ -50,3 +50,4 @@ Route::get('/user/{id}', [UserController::class, 'profile'])->name('user.profile
 Route::put('/user/{user}', [UserController::class, 'update'])->name('user.update')->middleware('isAdmin');
 
 Route::get('/education', [EducationController::class, 'index'])->name('education.show')->middleware('auth');
+Route::get('/education/{resource}', [EducationController::class, 'show'])->name('resource.show')->middleware('auth');

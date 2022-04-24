@@ -8,6 +8,25 @@
 }
 
 .task-edit:hover {
-    background-color: #0df0ac;
+    background-color: #c6f5f5;
     transition: 0.5s;
+}
+
+.resource-card:hover {
+    background-color: #dde0e3;
+    transition: 0.3s;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+.task-card:hover {
+    background-color: #dde0e3;
+    transition: 0.3s;
+}
+
+a:hover {
+    color: black;
 }

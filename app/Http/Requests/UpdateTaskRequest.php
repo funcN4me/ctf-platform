@@ -38,11 +38,15 @@ class UpdateTaskRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255|min:3',
-            'category' => 'required|exists:categories,name',
+            'new_category' => 'nullable|unique:mysql.categories,name',
+            'category' => 'required',
             'subcategory' => 'required|string|max:255|min:2',
+            'flag' => 'required|string|min:8|max:255',
+            'resources' => 'nullable|array',
+            'resources.*' => 'exists:mysql.resources,id',
+            'new_resources' => 'nullable|array',
+            'attachments' => 'nullable|array',
             'description' => 'required|string|min:2',
-            'link' => 'string',
-            'flag' => 'required|string|min:8|max:255'
         ];
     }
 }

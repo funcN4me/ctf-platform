@@ -17,4 +17,18 @@ class Category extends Model
     {
         return $this->hasMany(Task::class);
     }
+
+    public function getResourcesAttribute()
+    {
+        $tasks = $this->tasks;
+        $resources = [];
+        foreach ($tasks as $task) {
+            foreach ($task->resources as $resource) {
+                if (!in_array($resource, $resources)) {
+                    $resources[] = $resource;
+                }
+            }
+        }
+        return $resources;
+    }
 }

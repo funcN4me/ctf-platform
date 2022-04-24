@@ -6,7 +6,6 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header">{{ __('Создать задачу') }}</div>
-
                     <div class="card-body">
                         <form method="POST" action="{{ route('tasks.store') }}" enctype="multipart/form-data">
                             @csrf
@@ -25,18 +24,16 @@
                             </div>
 
                             @if($errors->any())
-                                @foreach($errors as $error)
-                                    {{ $error }}
-                                @endforeach
+                                {{ $errors->first() }}
                             @endif
 
                             <div class="row mb-3">
                                 <label for="category" class="col-md-4 col-form-label text-md-end">{{ __('Категория') }}</label>
 
                                 <div class="col-md-6">
-                                    <select name="category" class="form-select @error('category') is-invalid @enderror" id="create_category">
+                                    <select name="category" class="form-select @error('category') is-invalid @enderror" id="create_category" required>
                                         <option>Выберите категорию из списка</option>
-                                    @foreach($categories as $key => $value)
+                                        @foreach($categories as $key => $value)
                                             <option value="{{ $value->name }}">
                                             {{ $value->name }}
                                             </option>
@@ -82,13 +79,24 @@
                             </div>
 
                             <div class="row mb-3">
-                                <label for="resources" class="col-md-4 col-form-label text-md-end">{{ __('Ресурсы для решения') }}</label>
+                                <p class="col-md-4 col-form-label text-md-end">{{ __('Ресурсы для решения') }}</p>
 
                                 <div class="col-md-6">
-                                    <input id="resources" type="text" class="resources form-control @error('resources') is-invalid @enderror" name="resources[]" value="" required autocomplete="resources">
+                                    @if($resources->isNotEmpty())
+                                        <span style="font-size: 0.85em; font-weight: bold;color: red">Выберите ресурсы из списка (чтобы отменить выбор ресурса или выбрать несколько - нажмите на него с зажатой клавишей Ctrl)</span>
+                                        <select name="resources[]" class="form-select" multiple>
+                                            @foreach($resources as $resource)
+                                                <option value="{{ $resource->id }}">{{ $resource->title }}</option>
+                                            @endforeach
+                                        </select>
+                                        <br>
+                                        <input id="resources" type="text" class="resources form-control @error('resources') is-invalid @enderror" name="new_resources[]" value="" autocomplete="resources" placeholder="Название нового ресурса">
+                                    @else
+                                        <input id="resources" type="text" class="resources form-control @error('resources') is-invalid @enderror" name="new_resources[]" value="" autocomplete="resources" required placeholder="Название нового ресурса">
+                                    @endif
                                     <br>
-                                    <div class="container text-end">
-                                        <button id="add_resource_btn" type="button" class="btn btn-sm btn-secondary">Добавить ресурс</button>
+                                    <div id="control-btns" class="container text-end">
+                                        <button id="add_resource_btn" type="button" class="btn btn-sm btn-secondary">Добавить ещё один ресурс</button>
                                     </div>
                                     @error('resources')
                                     <span class="invalid-feedback" role="alert">
@@ -103,7 +111,7 @@
 
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <textarea name="description" class="form-control @error('description') is-invalid @enderror" id="description" style="height: 10em;"></textarea>
+                                        <textarea name="description" class="form-control @error('description') is-invalid @enderror" id="description" style="height: 10em;">{{ old('description') }}</textarea>
                                         <label for="description">Описание</label>
                                     </div>
                                     @error('description')
@@ -131,7 +139,7 @@
                                 <label for="url" class="col-md-4 col-form-label text-md-end">{{ __('Ссылка на задачу') }}</label>
 
                                 <div class="col-md-6">
-                                    <input class="form-control" type="url" id="url" name="url">
+                                    <input class="form-control @error('url') is-invalid @enderror" type="url" id="url" name="url">
                                     @error('url')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -144,7 +152,7 @@
                                 <label for="flag" class="col-md-4 col-form-label text-md-end">{{ __('Флаг') }}</label>
 
                                 <div class="col-md-6">
-                                    <input class="form-control" type="text" id="flag" name="flag">
+                                    <input class="form-control @error('flag') is-invalid @enderror" type="text" id="flag" name="flag" value="{{ old('flag') }}">
                                     <span style="font-size: 0.85em; font-weight: bold;color: red">*Префикс 4hsl33p{...} выставится автоматически</span>
                                     @error('flag')
                                     <span class="invalid-feedback" role="alert">
@@ -189,7 +197,22 @@
                 }
             });
             $("#add_resource_btn").on('click', function () {
-                $(".resources").last().after("<br> <input id=\"resources\" type=\"text\" class=\"resources form-control\" name=\"resources[]\">");
+                $(".resources").last().after(
+                    "<input id=\"resources\" type=\"text\" class=\"resources form-control mt-3\" required name=\"new_resources[]\">"
+                );
+                if(!$("#remove_resource_btn").length) {
+                    $("#control-btns").append(
+                        "<div class=\"mt-3\">" +
+                            "<button type='button' id=\"remove_resource_btn\" class='btn-sm btn-danger'>Удалить ресурс</button>" +
+                        "</div"
+                    );
+                    $("#remove_resource_btn").on("click", function () {
+                        $(".resources").last().remove();
+                        if ($(".resources").length === 1) {
+                            this.remove()
+                        }
+                    });
+                }
             });
                 if($('#success').length) {
                     Swal.fire({
@@ -204,5 +227,6 @@
                 }
             }
         );
+
     </script>
 @endsection

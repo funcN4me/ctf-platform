@@ -30,6 +30,15 @@ class StoreTaskRequest extends FormRequest
             'min' => 'Поле :attribute должно содержать минимум :min символов',
             'unique' => 'Данное :attribute уже используется',
             'in' => 'Выберите из списка',
+            'array' => 'Данные в поле :attribute неверные',
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'flag' => 'Флаг',
+            'url' => 'Ссылка на задачу'
         ];
     }
 
@@ -41,13 +50,16 @@ class StoreTaskRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255|min:3|unique:tasks,name',
-            'category' => 'required|in:Web,Reverse,Stegano,Forensic,Networking,Other',
+            'name' => 'required|string|max:255|min:3|unique:mysql.tasks,name',
+            'category' => 'required|exists:mysql.categories,name',
+            'new_category' => 'nullable|unique:mysql.categories,name',
             'subcategory' => 'required|string|max:255|min:2',
-            'resources' => 'array',
+            'flag' => 'unique:mysql.tasks,flag|required|string|min:8|max:255',
+            'resources' => 'nullable|array',
+            'resources.*' => 'exists:mysql.resources,id',
+            'new_resources' => 'nullable|array',
+            'attachments' => 'nullable|array',
             'description' => 'required|string|min:2',
-            'link' => 'string|unique',
-            'flag' => 'required|string|min:8|max:255|unique:tasks,flag',
         ];
     }
 }

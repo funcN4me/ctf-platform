@@ -12,8 +12,8 @@
                         <div class="col-md-3 mb-4">
                             <div id="showTask" style="cursor: pointer;" data-toggle="modal" data-target="#exampleModal"
                                  data-id="{{ $task->id }}">
-                                <div class="card @if(auth()->user()->tasks->contains($task->id)) text-white bg-success @endif">
-                                    <div class="card-header" style="max-height: 5em;">{{ $task->sub_category }}</div>
+                                <div class="card @if(auth()->user()->tasks->contains($task->id)) text-white bg-success @endif task-card">
+                                    <div class="card-header" style="max-height: 5em;">{{ $task->subcategory }}</div>
                                     <div class="card-body" style="min-height: 8em;">
                                         {{ $task->name }}
                                         @if(auth()->user()->isAdmin())
@@ -82,16 +82,19 @@
                         console.log(resp);
                         if (resp.success) {
                             Swal.fire({
-                                position: 'top-end',
+                                position: 'top-center',
                                 icon: 'success',
                                 title: 'Верно',
                                 showConfirmButton: false,
                                 timer: 1500
                             });
+                            setTimeout(function () {
+                                location.reload(true);
+                            }, 1500);
                         }
                         else {
                             Swal.fire({
-                                position: 'top-end',
+                                position: 'top-center',
                                 icon: 'error',
                                 title: 'Не верно',
                                 showConfirmButton: false,

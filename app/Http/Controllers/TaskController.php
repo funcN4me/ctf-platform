@@ -23,7 +23,8 @@ class TaskController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('create_task', compact('categories'));
+        $resources = Resource::all();
+        return view('create_task', compact('categories', 'resources'));
     }
 
     public function get($id)
@@ -59,36 +60,27 @@ class TaskController extends Controller
 
     public function store(StoreTaskRequest $request)
     {
-        $task = new Task();
-        $task->name = $request->name;
+        if ($request->category == 'Other' && Category::where('name', $request->category)->exists()) {
+            return back()->with('error', 'Данная категория уже существует');
+        }
 
-//        foreach ($request->resources as $resourceTitle) {
-//            $resource = new Resource([
-//                'title' => $resourceTitle
-//            ]);
-//
-//            if (!$resource->save()) {
-//                abort(500);
-//            }
-//
-//            $task->resources()->attach($resource->id);
-//        } TODO: Разобраться с ресурсами для обучения
-
-        if ($request->category === 'Other') {
-            if (Category::where('name', $request->category)->exists()) {
-                return back()->with('error', 'Данная категория уже существует');
-            }
+        if ($request->category == 'Other') {
             $category = new Category();
             $category->name = $request->new_category;
             $category->save();
-
-            $task->category_id = $category->id;
         }
         else {
-            $task->category_id = Category::firstWhere('name', $request->category)->id;
+            $category = Category::firstWhere('name', $request->category);
         }
 
-        $task->sub_category = $request->subcategory;
+        if (empty($request->resources) && empty(array_filter($request->new_resources))) {
+            return back()->with('error', 'Для задачи обязателен ресурс');
+        }
+
+        $task = new Task();
+        $task->name = $request->name;
+        $task->category_id = $category->id;
+        $task->subcategory = $request->subcategory;
         $task->description = $request->description;
         $task->url = $request->url;
         $task->flag = '4hsl33p{' . $request->flag . '}';
@@ -109,13 +101,47 @@ class TaskController extends Controller
             }
         }
 
+        foreach ($request->new_resources as $newResourceTitle) {
+            if (!$newResourceTitle) {
+                continue;
+            }
+            $resource = new Resource([
+                'title' => $newResourceTitle
+            ]);
+
+            if (!$resource->save()) {
+                abort(500);
+            }
+
+            $task->resources()->attach($resource->id);
+        } //TODO: Разобраться с ресурсами для обучения
+
+        if (!$request->resources) {
+            return back()->with('success', 'Задание создано');
+        }
+        foreach ($request->resources as $resourceId) {
+            if (!$task->hasResource($resourceId)) {
+                $task->resources()->attach($resourceId);
+            }
+        }
+
         return back()->with('success', 'Задание создано');
     }
 
     public function delete(Task $task)
     {
+        $default_categories = ['Web', 'Reverse', 'Stegano', 'Forensic', 'Networking'];
+
         foreach ($task->users as $user) {
             $task->users()->detach($user->id);
+        }
+
+        if (!in_array($task->category->name, $default_categories)) {
+            $task->category()->delete();
+        }
+
+        foreach ($task->attachments as $attachment) {
+            $attachment->delete();
         }
 
         if ($task->delete()) {
@@ -136,29 +162,30 @@ class TaskController extends Controller
     public function edit(Task $task)
     {
         $categories = Category::all();
-        return view('admin.edit_task', compact('task', 'categories'));
+        $resources = Resource::all();
+        return view('admin.edit_task', compact('task', 'categories', 'resources'));
     }
 
     public function update(UpdateTaskRequest $request,Task $task)
     {
-        $task->name = $request->name;
+        if ($request->category == 'Other' && Category::where('name', $request->category)->exists()) {
+            return back()->with('error', 'Данная категория уже существует');
+        }
 
-        if ($request->category === 'Other') {
-
-            if (Category::where('name', $request->category)->exists()) {
-                return back()->with('error', 'Данная категория уже существует');
-            }
-
-            $category = new Category([
-                'name' => $request->new_category
-            ]);
+        if ($request->category == 'Other') {
+            $category = new Category(['name' => $request->new_category]);
             $category->save();
-
-            $task->category_id = $category->id;
         }
         else {
-            $task->category_id = Category::firstWhere('name', $request->category)->id;
+            $category = Category::firstWhere('name', $request->category);
         }
+
+        if (empty($request->resources) && empty(array_filter($request->new_resources))) {
+            return back()->with('error', 'Для задачи обязателен ресурс');
+        }
+        $task->name = $request->name;
+        $oldCategory = $task->category;
+        $task->category_id = $category->id;
 
         if ($request->hasFile('attachments')) {
             $attachments = $request->file('attachments');
@@ -175,13 +202,42 @@ class TaskController extends Controller
             }
         }
 
-        $task->sub_category = $request->subcategory;
+        $task->resources()->detach();
+
+        foreach ($request->new_resources as $newResourceTitle) {
+            if (!$newResourceTitle) {
+                continue;
+            }
+            $resource = new Resource([
+                'title' => $newResourceTitle
+            ]);
+
+            if (!$resource->save()) {
+                abort(500);
+            }
+
+            $task->resources()->attach($resource->id);
+        } //TODO: Разобраться с ресурсами для обучения
+
+        if (!$request->resources) {
+            return back()->with('success', 'Задание создано');
+        }
+        foreach ($request->resources as $resourceId) {
+            if (!$task->hasResource($resourceId)) {
+                $task->resources()->attach($resourceId);
+            }
+        }
+
+        $task->subcategory = $request->subcategory;
         $task->description = $request->description;
         $task->url = $request->url;
         $task->flag = $request->flag;
-        $task->save();
+        $task->update();
 
+        if (!count($oldCategory->tasks)) {
+            $oldCategory->delete();
+        }
 
-        return back()->with('success', 'Задание создано');
+        return back()->with('success', 'Задание обновлено');
     }
 }

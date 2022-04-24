@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use function PHPUnit\Framework\returnArgument;
 
 class Task extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name', 'category', 'sub_category',
+        'name', 'category', 'subcategory',
         'description', 'attachments', 'url'
     ];
 
@@ -36,5 +37,10 @@ class Task extends Model
     public function resources()
     {
         return $this->belongsToMany(Resource::class);
+    }
+
+    public function hasResource($resource)
+    {
+        return $this->resources->contains(Resource::find($resource));
     }
 }

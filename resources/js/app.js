@@ -20,6 +20,7 @@ window.Vue = require('vue').default;
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.use(CKEDITOR);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -29,4 +30,10 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 
 const app = new Vue({
     el: '#app',
+    data: {
+        editorData: '<p>Content of the editor.</p>',
+        editorConfig: {
+            // The configuration of the editor.
+        }
+    }
 });
