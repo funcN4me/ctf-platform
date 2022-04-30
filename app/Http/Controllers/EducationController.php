@@ -27,4 +27,9 @@ class EducationController extends Controller
     {
         return view('article', compact('resource'));
     }
+
+    public function edit(Request $request, Resource $resource)
+    {
+        dd($request->input());
+    }
 }

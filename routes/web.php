@@ -51,3 +51,5 @@ Route::put('/user/{user}', [UserController::class, 'update'])->name('user.update
 
 Route::get('/education', [EducationController::class, 'index'])->name('education.show')->middleware('auth');
 Route::get('/education/{resource}', [EducationController::class, 'show'])->name('resource.show')->middleware('auth');
+Route::put('/education/{resource}', [EducationController::class, 'edit'])->name('resource.edit')->middleware('auth');
+
