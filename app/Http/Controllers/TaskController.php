@@ -83,6 +83,11 @@ class TaskController extends Controller
         $task->subcategory = $request->subcategory;
         $task->description = $request->description;
         $task->url = $request->url;
+
+        if (Task::where('flag', '4hsl33p{' . $request->flag . '}')->exists()) {
+            return back()->with('error', 'Данный флаг уже используется');
+        }
+
         $task->flag = '4hsl33p{' . $request->flag . '}';
         $task->save();
 

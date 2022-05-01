@@ -40,12 +40,13 @@
                         <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body" style="font-size: 16px;">
                         <input id="task_id" type="text" name="task_id" hidden>
                         <p id="modal-description"></p>
                         <span id="modal-link">Ссылка на задание: <a id="modal-url" href=""></a></span>
                         <br>
-                        <span id="modal-attach">Файлы для задания:</span>
+                        <br>
+                        <span id="modal-attach" class="mt-2">Файлы для задания:</span>
                         <div id="modal-attachments">
                         </div>
                         <br>

@@ -23,10 +23,6 @@
                                 </div>
                             </div>
 
-                            @if($errors->any())
-                                {{ $errors->first() }}
-                            @endif
-
                             <div class="row mb-3">
                                 <label for="category" class="col-md-4 col-form-label text-md-end">{{ __('Категория') }}</label>
 
@@ -216,13 +212,13 @@
             });
                 if($('#success').length) {
                     Swal.fire({
-                        position: 'top-end',
+                        position: 'top-center',
                         icon: 'success',
                         title: 'Задача добавлена',
                         backdrop: false,
                         width: '20rem',
                         showConfirmButton: false,
-                        timer: 1000
+                        timer: 1500
                     })
                 }
             }

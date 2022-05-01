@@ -28,8 +28,31 @@ class EducationController extends Controller
         return view('article', compact('resource'));
     }
 
+    public function showEdit(Resource $resource)
+    {
+        return view('article_edit', compact('resource'));
+    }
+
     public function edit(Request $request, Resource $resource)
     {
-        dd($request->input());
+        if (!$resource->update(['content' => $request->resource_content])) {
+            return back()->with('error', 'Не удалось обновить ресурс');
+        }
+        return back()->with('success', 'Ресурс обновлён');
+
+    }
+
+    public function delete(Resource $resource)
+    {
+        foreach ($resource->tasks as $task) {
+            $task->resources()->detach($task->id);
+        }
+
+        if ($resource->delete()) {
+            return back();
+        }
+
+        return abort(500);
+
     }
 }

@@ -61,14 +61,58 @@
         .m-b-md {
             margin-bottom: 30px;
         }
+        .satodsan-uvemopag h1 {
+            color: #636b6f;
+            font-size: 60px;
+            overflow: hidden;
+            font-weight: 200;
+            border-right: .17em solid #e29508;
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: .1em;
+            animation:
+                typing 3s steps(30, end),
+                blink-caret .7s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: orange }}
+
+        .let-me-in {
+            opacity: 0;
+            transition: 1s;
+            animation: show 2s 1;
+            animation-fill-mode: forwards;
+            animation-delay: 3s;
+        }
+
+        @keyframes show{
+            0%{ opacity:0; }
+            100% { opacity:1; }
+        }
+
+        @media screen and (max-width: 500px){
+            .satodsan-uvemopag h1 {
+                font-size: 33px;
+            }
+        }
     </style>
 </head>
 <body>
 <div class="flex-center position-ref full-height">
     @if (Route::has('login'))
         <div class="content">
+            <div class="satodsan-uvemopag">
+                <h1>Добро пожаловать!</h1>
+            </div>
             <div class="title m-b-md">
-                <a href="{{ route('login') }}" style="text-decoration:none; color:#636b6f;">Войти</a>
+                <a class="let-me-in" href="{{ route('login') }}" style="text-decoration:none; color:#636b6f;">Войти</a>
             </div>
         </div>
     @endif

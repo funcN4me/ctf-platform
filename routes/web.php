@@ -51,5 +51,6 @@ Route::put('/user/{user}', [UserController::class, 'update'])->name('user.update
 
 Route::get('/education', [EducationController::class, 'index'])->name('education.show')->middleware('auth');
 Route::get('/education/{resource}', [EducationController::class, 'show'])->name('resource.show')->middleware('auth');
-Route::put('/education/{resource}', [EducationController::class, 'edit'])->name('resource.edit')->middleware('auth');
-
+Route::get('/education/edit/{resource}', [EducationController::class, 'showEdit'])->name('resource.showEdit')->middleware(['auth', 'isAdmin']);
+Route::put('/education/edit/{resource}', [EducationController::class, 'edit'])->name('resource.edit')->middleware(['auth', 'isAdmin']);
+Route::delete('/education/{resource}', [EducationController::class, 'delete'])->name('resource.delete')->middleware('isAdmin');

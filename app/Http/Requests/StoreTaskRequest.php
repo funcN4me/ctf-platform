@@ -51,7 +51,7 @@ class StoreTaskRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255|min:3|unique:mysql.tasks,name',
-            'category' => 'required|exists:mysql.categories,name',
+            'category' => 'required',
             'new_category' => 'nullable|unique:mysql.categories,name',
             'subcategory' => 'required|string|max:255|min:2',
             'flag' => 'unique:mysql.tasks,flag|required|string|min:8|max:255',

@@ -30,3 +30,19 @@ a {
 a:hover {
     color: black;
 }
+
+#modal-attachments {
+    margin-top: 1.5em;
+}
+.links {
+    margin-top: 2em;
+    padding: 10px 20px;
+    color: #ffffff;
+    background-color: #0d6efd;
+    border-radius: 5px;
+}
+
+.links:hover {
+    background-color: #0b5ed7;
+    color: #ffffff;
+}

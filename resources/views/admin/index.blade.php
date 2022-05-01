@@ -57,9 +57,9 @@
                                     </td>
                                     <td align="right">
                                         <a class="btn btn-sm btn-primary" style="margin-bottom: 1vh;"
-                                           href="{{ route('task.edit', $task) }}">Изменить
+                                           href="{{ route('resource.showEdit', $resource->id) }}">Изменить
                                         </a>
-                                        <form action="{{ route('task.delete', $task) }}" method="POST">
+                                        <form action="{{ route('resource.delete', $resource->id) }}" method="POST">
                                             @method('delete')
                                             @csrf
                                             <button type="submit" class="btn btn-sm btn-danger">Удалить</button>
