@@ -30,7 +30,7 @@
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light shadow-sm" style="background-color: #c6f5f5">
+        <nav class="navbar navbar-expand-md navbar-light shadow-sm" style="background-color: #c6e0f5">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'CTF-Платформа') }}

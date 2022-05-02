@@ -10,7 +10,6 @@ use App\Models\Category;
 use App\Models\Resource;
 use App\Models\Task;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
@@ -105,12 +104,12 @@ class TaskController extends Controller
                 $fileModel->save();
             }
         }
-
         foreach ($request->new_resources as $newResourceTitle) {
             if (!$newResourceTitle) {
                 continue;
             }
             $resource = new Resource([
+                'category_id' => $category->id,
                 'title' => $newResourceTitle
             ]);
 
@@ -214,6 +213,7 @@ class TaskController extends Controller
                 continue;
             }
             $resource = new Resource([
+                'category_id' => $category->id,
                 'title' => $newResourceTitle
             ]);
 

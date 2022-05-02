@@ -52,5 +52,8 @@ class DatabaseSeeder extends Seeder
             $category->name = $categoryName;
             $category->save();
         }
+
+        $this->call(TasksSeeder::class);
+
     }
 }

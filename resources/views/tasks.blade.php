@@ -43,7 +43,7 @@
                     <div class="modal-body" style="font-size: 16px;">
                         <input id="task_id" type="text" name="task_id" hidden>
                         <p id="modal-description"></p>
-                        <span id="modal-link">Ссылка на задание: <a id="modal-url" href=""></a></span>
+                        <span id="modal-link">Ссылка на задание: <a id="modal-url" href="" style="color: #0a53be" target="_blank"></a></span>
                         <br>
                         <br>
                         <span id="modal-attach" class="mt-2">Файлы для задания:</span>

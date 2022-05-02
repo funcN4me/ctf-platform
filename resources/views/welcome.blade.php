@@ -87,12 +87,12 @@
         .let-me-in {
             opacity: 0;
             transition: 1s;
-            animation: show 2s 1;
+            animation: swim 2s 1;
             animation-fill-mode: forwards;
             animation-delay: 3s;
         }
 
-        @keyframes show{
+        @keyframes swim{
             0%{ opacity:0; }
             100% { opacity:1; }
         }

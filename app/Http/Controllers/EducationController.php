@@ -5,22 +5,34 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Resource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class EducationController extends Controller
 {
     public function index()
     {
         $categories = Category::all();
-
         $categoryResources = [];
+
         foreach ($categories as $category) {
-            foreach ($category->tasks as $task) {
-                $categoryResources[$category->name] = $task->resources;
+            $categoryResources[$category->name] = [];
+            foreach ($category->resources as $resource) {
+                if (!in_array($resource->id, $categoryResources[$category->name])) {
+                    $categoryResources[$category->name][] = $resource->id;
+                }
             }
         }
-        $categoryResources = array_unique($categoryResources);
+
+        foreach ($categoryResources as $category => $resources) {
+            foreach ($resources as $key => $resource) {
+                $categoryResources[$category][$key] = Resource::find($resource);
+            }
+        }
 
         return view('education', compact('categories', 'categoryResources'));
+
+
+//        return view('education', compact('categories', 'categoryResources'));
     }
 
     public function show(Resource $resource)

@@ -9,11 +9,16 @@ class Resource extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'title', 'content'
+        'category_id', 'title', 'content'
     ];
 
     public function tasks()
     {
         return $this->belongsToMany(Task::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }
