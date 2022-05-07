@@ -10,7 +10,7 @@
                 @foreach($tasks as $task)
                     @if($task->category->name == $category->name)
                         <div class="col-md-3 mb-4">
-                            <div id="showTask" style="cursor: pointer;" data-toggle="modal" data-target="#exampleModal"
+                            <div id="showTask" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModal"
                                  data-id="{{ $task->id }}">
                                 <div class="card @if(auth()->user()->tasks->contains($task->id)) text-white bg-success @endif task-card">
                                     <div class="card-header" style="max-height: 5em;">{{ $task->subcategory }}</div>
@@ -31,14 +31,16 @@
         </div>
     </div>
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form action="{{ route('tasks.check') }}" method="post">
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
                     <div class="modal-body" style="font-size: 16px;">
                         <input id="task_id" type="text" name="task_id" hidden>
@@ -105,7 +107,7 @@
                     }
                 }).fail(function (resp) {
                     Swal.fire({
-                        position: 'top-end',
+                        position: 'top-center',
                         icon: 'error',
                         title: resp.responseJSON.errors.flag[0],
                         showConfirmButton: false,
