@@ -1,22 +1,26 @@
-@extends('layouts.app')
+@extends('layouts.new_app')
+
+@section('header', 'Список ресурсов')
 
 @section('content')
-    <div class="container">
-        <div class="row justify-content-start">
-            @foreach($categories as $category)
-                @if($category->tasks->count() !== 0)
-                    <span class="category_name">{{ $category->name }}</span>
-                    @foreach($categoryResources[$category->name] as $resource)
-                        <div class="container">
-                            <a href="{{ route('resource.show', $resource->id) }}">
-                                <div class="container card pt-2 mb-3 resource-card" style="height: 10vh;">
-                                    <h3>{{$resource->title}}</h3>
-                                </div>
-                            </a>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                @foreach($categories as $category)
+                    @if($category->tasks->count() !== 0)
+                        <div class="col-lg-12">
+                            <p class="category_name">Категория: {{ $category->name }}</p>
+                            @foreach($categoryResources[$category->name] as $resource)
+                                <a href="{{ route('resource.show', $resource->id) }}">
+                                    <div class="container card pt-2 mb-3 resource-card" style="height: 10vh;">
+                                        <h3>{{ $resource->title }}</h3>
+                                    </div>
+                                </a>
+                            @endforeach
                         </div>
-                    @endforeach
-                @endif
-            @endforeach
+                    @endif
+                @endforeach
+            </div>
         </div>
-    </div>
+    </section>
 @endsection

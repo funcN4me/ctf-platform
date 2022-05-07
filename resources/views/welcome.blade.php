@@ -71,8 +71,8 @@
             margin: 0 auto;
             letter-spacing: .1em;
             animation:
-                typing 3s steps(30, end),
-                blink-caret .7s step-end infinite;
+                typing 1.8s steps(30, end),
+                blink-caret 1s step-end infinite;
         }
 
         @keyframes typing {
@@ -89,7 +89,7 @@
             transition: 1s;
             animation: swim 2s 1;
             animation-fill-mode: forwards;
-            animation-delay: 3s;
+            animation-delay: 1.8s;
         }
 
         @keyframes swim{
