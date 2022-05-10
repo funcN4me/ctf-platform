@@ -6,6 +6,7 @@
         <a href="{{ route('resource.showEdit', $resource->id) }}" style="font-size: 18px; color: #0a53be">(редактировать)</a>
     @endif
 @endsection
+
 @section('breadcrumbs')
     <ol class="breadcrumb float-sm-right">
         <li class="breadcrumb-item"><a href="{{ route('education.show') }}">Список ресурсов</a></li>
@@ -14,7 +15,11 @@
 @endsection
 
 @section('content')
-    <div class="container">
-            {!! $resource->content !!}
-    </div>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card p-3">
+                {!! $resource->content !!}
+            </div>
+        </div>
+    </section>
 @endsection

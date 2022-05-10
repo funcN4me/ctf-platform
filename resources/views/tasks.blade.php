@@ -1,35 +1,39 @@
 @extends('layouts.new_app')
 
+@section('header', 'Список задач')
+
 @section('content')
-    <div class="container">
-        <div class="row justify-content-start">
+    <section class="content">
+        <div class="container-fluid">
             @foreach(\App\Models\Category::all() as $category)
                 @if($category->tasks->count() !== 0)
                     <span class="category_name">{{ $category->name }}</span>
                 @endif
-                @foreach($tasks as $task)
-                    @if($task->category->name == $category->name)
-                        <div class="col-md-3 mb-4">
-                            <div id="showTask" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                                 data-id="{{ $task->id }}">
-                                <div class="card @if(auth()->user()->tasks->contains($task->id)) text-white bg-success @endif task-card">
-                                    <div class="card-header" style="max-height: 5em;">{{ $task->subcategory }}</div>
-                                    <div class="card-body" style="min-height: 8em;">
-                                        {{ $task->name }}
-                                        @if(auth()->user()->isAdmin())
-                                            <div class="container align-text-bottom text-end" style="padding-top: 4vh;margin-left: 1.5em;">
-                                                <a class="task-edit" href="{{ route('task.edit', $task->id) }}" style="border: 1px solid black; border-radius: 25px; padding: 8px;"><img src="{{ asset('images/pen.svg') }}" alt="" width="20px"></a>
-                                            </div>
-                                        @endif
+                <div class="row">
+                    @foreach($tasks as $task)
+                        @if($task->category->name == $category->name)
+                            <div class="col-md-3 mb-4">
+                                <div id="showTask" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                     data-id="{{ $task->id }}">
+                                    <div class="card @if(auth()->user()->tasks->contains($task->id)) text-white bg-success @endif task-card">
+                                        <div class="card-header" style="max-height: 5em;">{{ $task->subcategory }}</div>
+                                        <div class="card-body" style="min-height: 8em;">
+                                            {{ $task->name }}
+                                            @if(auth()->user()->isAdmin())
+                                                <div class="align-text-bottom text-right" style="padding-top: 4vh;">
+                                                    <a class="task-edit" href="{{ route('task.edit', $task->id) }}" style="border: 1px solid black; border-radius: 25px; padding: 8px;"><img src="{{ asset('images/pen.svg') }}" alt="" width="20px"></a>
+                                                </div>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    @endif
-                @endforeach
+                        @endif
+                    @endforeach
+                </div>
             @endforeach
         </div>
-    </div>
+    </section>
     <!-- Modal -->
     <div class="modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" role="dialog">
         <div class="modal-dialog">
@@ -77,43 +81,53 @@
                 let task_id = $('#task_id').val();
                 let flag = $('#flag').val();
                 var _token = $('input[name="_token"]').val();
-                $.ajax({
-                    type: "POST",
-                    url: '{{ route('tasks.check') }}',
-                    data: {'_token':_token,'task_id':task_id,'flag':flag},
-                    success: function (resp) {
-                        console.log(resp);
-                        if (resp.success) {
-                            Swal.fire({
-                                position: 'top-center',
-                                icon: 'success',
-                                title: 'Верно',
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                            setTimeout(function () {
-                                location.reload(true);
-                            }, 1500);
+                if (flag.length !== 0) {
+                    $.ajax({
+                        type: "POST",
+                        url: '{{ route('tasks.check') }}',
+                        data: {'_token':_token,'task_id':task_id,'flag':flag},
+                        success: function (resp) {
+                            if (resp.success) {
+                                Swal.fire({
+                                    position: 'top-center',
+                                    icon: 'success',
+                                    title: 'Верно',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                                setTimeout(function () {
+                                    location.reload(true);
+                                }, 1500);
+                            }
+                            else {
+                                Swal.fire({
+                                    position: 'top-center',
+                                    icon: 'error',
+                                    title: 'Не верно',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                            }
                         }
-                        else {
-                            Swal.fire({
-                                position: 'top-center',
-                                icon: 'error',
-                                title: 'Не верно',
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                        }
-                    }
-                }).fail(function (resp) {
+                    }).fail(function (resp) {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: resp.responseJSON.errors.flag[0],
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    });
+                }
+                else {
                     Swal.fire({
-                        position: 'top-center',
+                        position: 'center',
                         icon: 'error',
-                        title: resp.responseJSON.errors.flag[0],
+                        title: 'Поле флаг обязательно для заполнения',
                         showConfirmButton: false,
                         timer: 1500
                     });
-                });
+                }
             });
         });
 
@@ -123,12 +137,9 @@
         $('body').on('click', '#showTask', function (event) {
             event.preventDefault();
             var id = $(this).data('id');
-            console.log(id);
             $.get('task/' + id, function (data) {
                 let url = data.data.url;
                 $('#flag').val("");
-                console.log(data.data);
-                console.log(data);
                 $('#exampleModalLabel').text(data.data.name);
                 $('#modal-description').text(data.data.description);
                 $('#modal-url').text(data.data.url);

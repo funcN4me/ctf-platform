@@ -1,19 +1,18 @@
-@extends('layouts.app')
+@extends('layouts.new_app')
+
+@section('header', 'Пользователи')
 
 @section('content')
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="col-md-9" style="margin: 0 auto">
                 <div class="card">
-                    <div class="card-header">
-                        Пользователи
-                    </div>
                     <div class="card-body">
                         <table class="table">
                             <thead>
-                                <th>ФИО</th>
+                                <th style="width: 60%">ФИО</th>
                                 <th>Группа</th>
-                                <th></th>
+                                <th style="width: 10%"></th>
                             </thead>
                             <tbody>
                             @foreach($users as $user)
@@ -32,5 +31,5 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 @endsection

@@ -45,3 +45,18 @@ a:hover {
     background-color: #0b5ed7;
     color: #ffffff;
 }
+
+.select2-selection__rendered {
+    line-height: 27px !important;
+    padding-left: 0 !important;
+}
+.select2-container .select2-selection--single {
+    height: 39px !important;
+}
+.select2-selection__arrow {
+    height: 34px !important;
+}
+
+li.select2-selection__choice {
+    background-color: #6c757d !important;
+}

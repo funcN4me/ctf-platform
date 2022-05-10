@@ -19,8 +19,7 @@
                 @csrf
                 @method('put')
                 <div class="card p-3">
-                    <textarea name="resource_content" id="content" required class="form-control" rows="5" placeholder="Content">{!! $resource->content !!}</textarea>
-
+                    <textarea name="resource_content" id="summernote" required class="form-control" rows="5" placeholder="Content">{!! $resource->content !!}</textarea>
                     <button class="btn btn-success mt-3" type="submit">Отправить</button>
                 </div>
             </form>
@@ -29,23 +28,22 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('/ckeditor/ckeditor.js') }}"></script>
-    <script src="{{ asset('/ckeditor/adapters/jquery.js') }}"></script>
     <script>
-        $(document).ready(function () {
-            CKEDITOR.replace( 'content' );
+        $(document).ready(function() {
+            $('#summernote').summernote({
+                codeviewIframeFilter: true
+            });
             @if(\Illuminate\Support\Facades\Session::has('success'))
-            Swal.fire({
-                position: 'top-center',
-                icon: 'success',
-                title: '{{session('success')}}',
-                backdrop: false,
-                width: '20rem',
-                showConfirmButton: false,
-                timer: 1500
-            })
+                Swal.fire({
+                    position: 'top-center',
+                    icon: 'success',
+                    title: '{{session('success')}}',
+                    backdrop: false,
+                    width: '20rem',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             @endif
         });
-
     </script>
 @endsection

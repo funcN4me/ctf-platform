@@ -1,13 +1,12 @@
-@extends('layouts.app')
+@extends('layouts.new_app')
+
+@section('header', 'Профиль пользователя ' . $user->name)
 
 @section('content')
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="col-md-9" style="margin: 0 auto">
                 <div class="card">
-                    <div class="card-header">
-                        Пользователь {{ $user->name }}
-                    </div>
                     <form action="{{ route('user.update', $user) }}" method="POST">
                         @method('put')
                         @csrf
@@ -47,12 +46,10 @@
                                     <input id="name" type="text" class="form-control" name="name" value="{{ \Illuminate\Support\Carbon::createFromFormat('Y-m-d H:i:s', $user->updated_at)->format('d.m.Y H:i:s') }}" required autocomplete="name" autofocus disabled>
                                 </div>
                             </div>
-                            <div class="row text-end">
-                                <div class="col-md-7">
-                                    @if(auth()->user()->isAdmin())
-                                        <button type="submit" class="btn btn-primary">Изменить</button>
-                                    @endif
-                                </div>
+                            <div class="col-lg-12 text-center">
+                                @if(auth()->user()->isAdmin())
+                                    <button type="submit" class="btn btn-primary col-lg-4">Изменить</button>
+                                @endif
                             </div>
                             @if($user->tasks->count() == 0)
                                 <div class="container text-center mt-5">
@@ -84,5 +81,5 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 @endsection

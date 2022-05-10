@@ -1,11 +1,21 @@
-@extends('layouts.app')
+@extends('layouts.new_app')
+
+@section('header')
+    Изменить задачу: {{ $task->name }}
+@endsection
+
+@section('breadcrumbs')
+    <ol class="breadcrumb float-sm-right">
+        <li class="breadcrumb-item"><a href="{{ route('tasks.show') }}">Список задач</a></li>
+        <li class="breadcrumb-item active">{{ $task->name }}</li>
+    </ol>
+@endsection
 
 @section('content')
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="col-md-9" style="margin: 0 auto">
                 <div class="card">
-                    <div class="card-header">{{ __('Изменить задачу') }}</div>
                     <div class="card-body">
                         <form method="POST" action="{{ route('task.update', $task) }}" enctype="multipart/form-data">
                             @method('put')
@@ -32,7 +42,7 @@
                                 <label for="category" class="col-md-4 col-form-label text-md-end">{{ __('Категория') }}</label>
 
                                 <div class="col-md-6">
-                                    <select name="category" class="form-select @error('category') is-invalid @enderror" id="create_category">
+                                    <select name="category" class="form-control js-select2-category @error('category') is-invalid @enderror" id="create_category">
                                         <option>{{ $task->category->name }}</option>
 
                                     @foreach($categories as $key => $value)
@@ -84,16 +94,16 @@
                             </div>
 
                             <div class="row mb-3">
-                                <p class="col-md-4 col-form-label text-md-end">{{ __('Ресурсы для решения') }}</p>
+                                <label for="resources-select" class="col-md-4 col-form-label text-md-end">{{ __('Ресурсы для решения') }}</label>
 
                                 <div class="col-md-6">
                                     @if($resources->isNotEmpty())
-                                        <span style="font-size: 0.85em; font-weight: bold;color: red">Выберите ресурсы из списка (чтобы отменить выбор ресурса или выбрать несколько - нажмите на него с зажатой клавишей Ctrl)</span>
-                                        <select name="resources[]" class="form-select" multiple>
+                                        <select id="resources-select" name="resources[]" class="form-control js-select2-resources" multiple>
                                             @foreach($resources as $resource)
                                                 <option value="{{ $resource->id }}" @if($task->resources->contains($resource)) selected @endif>{{ $resource->title }}</option>
                                             @endforeach
                                         </select>
+                                        <br>
                                         <br>
                                         <input id="resources" type="text" class="resources form-control @error('resources') is-invalid @enderror" name="new_resources[]" value="" autocomplete="resources" placeholder="Название нового ресурса">
                                     @else
@@ -117,7 +127,6 @@
                                 <div class="col-md-6">
                                     <div class="form-floating">
                                         <textarea name="description" class="form-control @error('description') is-invalid @enderror" id="description" style="height: 10em;">{{ $task->description }}</textarea>
-                                        <label for="description">Описание</label>
                                     </div>
                                     @error('description')
                                     <span class="invalid-feedback" role="alert">
@@ -200,7 +209,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 @endsection
 
 @section('scripts')
@@ -224,6 +233,8 @@
                     $("#div-new-category").attr('hidden', true);
                 }
             });
+            $('.js-select2-category').select2();
+            $('.js-select2-resources').select2();
             $('body').on('click', '#attachmentDelete', function (event) {
                 var id = $(this).data('id');
                 $.ajax({
@@ -236,6 +247,24 @@
                         }
                     }
                 });
+            });
+            $("#add_resource_btn").on('click', function () {
+                $(".resources").last().after(
+                    "<input id=\"resources\" type=\"text\" class=\"resources form-control mt-3\" required name=\"new_resources[]\">"
+                );
+                if(!$("#remove_resource_btn").length) {
+                    $("#control-btns").append(
+                        "<div class=\"mt-3\">" +
+                        "<button type='button' id=\"remove_resource_btn\" class='btn-sm btn-danger'>Удалить ресурс</button>" +
+                        "</div"
+                    );
+                    $("#remove_resource_btn").on("click", function () {
+                        $(".resources").last().remove();
+                        if ($(".resources").length === 1) {
+                            this.remove()
+                        }
+                    });
+                }
             });
                 if($('#success').length) {
                     Swal.fire({
